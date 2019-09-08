@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>JavaScript Tutorials</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <script src="Scripts/modernizr.custom.40753.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Bitter" rel="stylesheet" />
+  <link rel="stylesheet" href="ProjectStyles.css">
+  <link rel="stylesheet" href="SyntaxHighlighter/shCore.css">
+  <link rel="stylesheet" href="SyntaxHighlighter/shThemeDefault.css">
+  <link rel="shortcut icon" href="images/favicon.ico">
+</head>
+
+<body>
+  <header id="top">
+  </header>
+  <nav class="sitenavigation">
+    <ul>
+      <figure>
+        <a href="#"><img src="images/JavaScriptNewLogo.png" id="icon-home" width="350" height="100" alt="JavaScript Tutorials"></a>
+      </figure>
+      <li><a href="index.html">Validation</a></li>
+      <li><a href="textInput.html">Text Input</a></li>
+      <li><a href="otherInput.html">Other Input</a></li>
+      <li><a href="regExp.html">RegExp Object</a></li>
+    </ul>
+  </nav>
+  <article id="contentstart">
+    <h2 class="intro">Regular Expressions</h2>
+    <p>Regular expressions are patterns used for matching and manipulating strings according to specified rules. We will be adding two regular expressions to our form one for our name field, and the other for an optional fieldset, that request the telephone number and date a user would like to be contacted. Before we begin analyzing our JavaScript code as per usual, well first dissect these
+      regular expressions to gain a better understanding of how they work.</p>
+    <br>
+    <dl>
+      <dt>Name field pattern /^([A-Za-z ]{2,} )([A-Za-z]{2,})$/</dt>
+      <dd>All patterns must begin and end with a forward slash, the caret following the forward slash matches characters at the beginning of a string. Just as the dollar sign before the ending forward slash matches characters at the end of a string. The parentheses indicate a sub expression, think of them as individual components of a pattern. The brackets contain all characters that are allowed
+        within the sub expression. Notice that only lower case/uppercase letters and a white space is allowed.</dd>
+      <br>
+      <dd>The curly braces containing the number two followed by a comma indicates that the sub expression must contain at least two characters. Keep in mind the sub expression ends with a blank space, signifying the first portion of our pattern must include a white space. Our second sub expression doesn’t contain a white space within its brackets nor is a white space present within the expression
+        itself. We can interpret this pattern as a user having to enter their first name, followed by a space and ending with their last name. Such as "John Doe".</dd>
+      <br>
+      <dt>Phone field pattern /^(\([0-9]{3}\))([0-9]{3})(\-[0-9]{4})$/</dt>
+      <dd>Our phone pattern begins with and ends with the same few symbols as our previous pattern. However, notice the back slash, a back slash within a pattern indicates that the symbol which follows it should be included in the pattern, and not interpreted as part of the code for the pattern. The brackets for all three sub expressions allow only numbers between zero and nine. The curly braces
+        for the first two sub expressions contains a number without a comma telling us that only three characters are permitted, while the curly braces for the last sub expression allows four. This pattern would translate to something along the lines of “(555)555-5555”.</dd>
+    </dl>
+    <br>
+    <p class="highlight">Note that modern browsers perform their own pattern match validation for emails if the input type for that field is equal to email.</p>
+    <br>
+    <p>To incorporate the name field regular expression. We simply create a variable with the pattern as its value, and add it under the existing variables in our <span class="bold">validatePersonalInfo() function</span>.</p>
+    <br>
+    <pre class="brush: js;  highlight: [5]">
+function validateCPU() {
+var fieldsetValidity = true;
+var errorDiv = document.querySelectorAll("div.componentsErrorMessage");
+var cpu = document.getElementsByName("CPU");
+var namePattern = /^([A-Za-z ]{2,} )([A-Za-z]{2,})$/;
+try {
+</pre>
+    <br>
+    <p>We then create a new else if statement at the bottom of our <span class="bold">validatePersonalInfo() function</span> within the try block. That uses the .test method to see if our variables pattern matches the value of the input box, if the results of that match is equal to false. We throw a very specific error message to insure the user understands what input is allowed.<p>
+        <br>
+        <pre class="brush: js;  highlight: [4, 5, 6]">
+	else if (!(nameField.value)) {
+	nameField.style.background = "rgb(255,233,233)";
+	throw "Please Enter Your Name";}
+	else if (namePattern.test(nameField.value) === false) {
+	nameField.style.background = "rgb(255,233,233)";
+	throw "Name must contain a-z/A-Z only and a space separator";}
+	}
+</pre>
+        <br>
+        <p class="highlight">Note that you shouldn’t rely solely on your error messages to indicate a patterns structure, but also include succinct place holder text to give the user a chance to input the proper data type on their first attempt.</p>
+        <br>
+        <p>Above our <span class="bold">validateForm(evt) function</span> well add the final piece of code we need to validate our “Phone Appointment (Optional)” section. Since entering the following information is optional our form will not throw any errors if both fields are left blank. The first if statement checks if both field values are not equal to null, a second if statement which is
+          nested within the first then executes. Testing our pattern against the phone input value. If input exists within one field, are last else if statement requires both fields to contain an entry.</p>
+        <br>
+        <pre class="brush: js; collapse: true">
+function validateContact() {
+var errorDiv = document.querySelectorAll("div.errorMessage");
+var phone = document.getElementById("telephone")
+var date = document.getElementById("tripDate")
+var phonePattern = /^(\([0-9]{3}\))([0-9]{3})(\-[0-9]{4})$/;
+try {
+// reset styles to valid state
+phone.style.background = "";
+date.style.background = "";
+errorDiv[2].style.display = "none";
+if ((phone.value !== "" &amp;&amp; date.value !== "")) {
+// all fields are filled
+	if (phonePattern.test(phone.value) === false) {
+		phone.style.background = "rgb(255,233,233)";
+		throw "Please use the exact format for phone field: (###)###-####";}
+	}
+	else if (!(phone.value === "" &amp;&amp; date.value === "")) {
+	// not all fields are blank
+	throw "For Phone Appointment please fill both fields or leave both fields blank";}
+	}
+catch(msg) {
+	if (phone.value === "") {phone.style.background = "rgb(255,233,233)";}
+	else if (date.value === "") {date.style.background = "rgb(255,233,233)";}
+	errorDiv[2].style.display = "block";
+	errorDiv[2].innerHTML = msg;
+	formValidity = false;
+	}
+}
+</pre>
+        <br>
+        <p>All that’s left is to add the function to our call stack.</p>
+        <br>
+        <pre class="brush: js;  highlight: [7]">
+// add calls below to validation functions
+validatePersonalInfo();
+validateCPU();
+validateGPU();
+validateBrand();
+validateStorage();
+validateContact();
+</pre>
+        <br>
+        <p>Take a swing at the form below to view our completed JavaScript Program in all its glory.</p>
+        <br id="formTop">
+        <p class="highlight">Note that upon form validation you will automatically be redirected to the results page.</p>
+        <br>
+        <div class="form-style-3">
+          <h2>Contact Us</h2>
+          <p id="errorText"></p>
+          <form action="results.html">
+            <fieldset class="info">
+              <legend>Personal Info</legend>
+              <label for="field1"><span>Name <span class="required">*</span></span><input id="field1" type="text" class="input-field" name="name" placeholder="First Name Last name" /></label>
+              <label for="field2"><span>Email <span class="required">*</span></span><input id="field2" type="email" class="input-field" name="email" placeholder="address@example.com" /></label>
+              <div class="errorMessage"></div>
+            </fieldset>
+            <fieldset>
+              <fieldset class="components">
+                <legend class="fav">Favorite Components</legend>
+                <legend>CPU</legend>
+                <label for="field3"><input type="radio" name="CPU" id="field3" value="Intel">
+                  <span>Intel</span>
+                </label>
+                <label for="field4">
+                  <input type="radio" name="CPU" id="field4" value="AMD">
+                  <span>AMD</span>
+                </label>
+                <div class="componentsErrorMessage"></div>
+                <legend>Graphics Card</legend>
+                <label for="field5">
+                  <input type="radio" name="GPU" id="field5" value="Nvidia">
+                  <span>Nvidia</span>
+                </label>
+                <label for="field6">
+                  <input type="radio" name="GPU" id="field6" value="AMD">
+                  <span>AMD</span>
+                </label>
+                <div class="componentsErrorMessage"></div>
+                <legend>Preferred Manufacturer</legend>
+                <label for="field7"><span>Brand of Choice</span></label>
+                <select id="field7" name="Favorite-Manufacturer">
+                  <option value="Samsung">Samsung</option>
+                  <option value="Gigabyte">Gigabyte</option>
+                  <option value="Corsair">Corsair</option>
+                  <option value="G. SKILL">G. SKILL</option>
+                  <option value="EVGA">EVGA</option>
+                  <option value="ASUS">ASUS</option>
+                  <option value="MSI">MSI</option>
+                  <option value="NZXT">NZXT</option>
+                </select>
+                <div class="componentsErrorMessage"></div>
+                <legend>Preferred Storage</legend>
+                <label for="hdd">
+                  <input type="checkbox" id="hdd" Value="HDD" name="Preferred-Storage">
+                  <span>HDD</span>
+                </label>
+                <label for="ssd">
+                  <input type="checkbox" id="ssd" Value="SSD" name="Preferred-Storage">
+                  <span>SSD</span>
+                </label>
+                <label for="m2">
+                  <input type="checkbox" id="m2" Value="M.2" name="Preferred-Storage">
+                  <span>M.2</span>
+                </label>
+                <label for="nvme">
+                  <input type="checkbox" id="nvme" Value="NVMe" name="Preferred-Storage">
+                  <span>NVMe</span>
+                </label>
+                <div class="errorMessage"></div>
+              </fieldset>
+            </fieldset>
+            <fieldset class="info">
+              <legend>Phone Appointment &lpar;Optional&rpar;</legend>
+              <label for="telephone">
+                <span>Phone</span>
+                <input type="tel" id="telephone" name="Phone-Number" placeholder="(555)555-5555" />
+              </label>
+              <label for="tripDate">
+                <span>Pick a date</span>
+                <input type="text" id="tripDate" name="Contact-Date" />
+              </label>
+              <div id="cal">
+                <div id="prev">&lt; previous</div>
+                <div id="next">next &gt;</div>
+                <table>
+                  <caption></caption>
+                  <tr>
+                    <th>Sun</th>
+                    <th>Mon</th>
+                    <th>Tue</th>
+                    <th>Wed</th>
+                    <th>Thu</th>
+                    <th>Fri</th>
+                    <th>Sat</th>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </table>
+                <p id="close">close <span>&#9746;</span></p>
+              </div>
+              <div class="errorMessage"></div>
+              <div id="countdownSection">
+                <p>Countdown to appointment =<span id="countdown"></span></p>
+            </fieldset>
+            <fieldset class="add">
+              <legend>Additional Information</legend>
+              <label for="feedback">
+                Feedback, special requests, or other information
+                <textarea name="Feedback" id="feedback" placeholder="Feel free to contact us with any questions regarding your JavaScript Code. You can also suggest what our next in-depth topic should be about."></textarea>
+              </label>
+              <label class="submitbutton">&nbsp;<input type="submit" id="submitForm" value="Submit" /></label>
+            </fieldset>
+          </form>
+        </div>
+
+  </article>
+  <footer id="content-end">
+    <p>JavaScript Tutorials</p>
+  </footer>
+  <script src="Scripts/CooperBlack.js"></script>
+  <script src="SyntaxHighlighter/shCore.js"></script>
+  <script src="SyntaxHighlighter/shBrushJScript.js"></script>
+  <script type="text/javascript">
+    SyntaxHighlighter.all()
+  </script>
+  <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="Scripts/NavBar.js"></script>
+  <script src="Scripts/calender.js"></script>
+  <script src="Scripts/Validation3.js"></script>
+</body>
+
+</html>

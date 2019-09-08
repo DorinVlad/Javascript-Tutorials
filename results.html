@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>JavaScript Tutorials</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <script src="Scripts/modernizr.custom.40753.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Bitter" rel="stylesheet" />
+  <link rel="stylesheet" href="ProjectStyles.css">
+  <link rel="stylesheet" href="SyntaxHighlighter/shCore.css">
+  <link rel="stylesheet" href="SyntaxHighlighter/shThemeDefault.css">
+  <link rel="shortcut icon" href="images/favicon.ico">
+</head>
+
+<body>
+  <header id="top">
+  </header>
+  <nav class="sitenavigation">
+    <ul>
+      <figure>
+        <a href="#"><img src="images/JavaScriptNewLogo.png" id="icon-home" width="350" height="100" alt="JavaScript Tutorials"></a>
+      </figure>
+      <li><a href="index.html">Validation</a></li>
+      <li><a href="textInput.html">Text Input</a></li>
+      <li><a href="otherInput.html">Other Input</a></li>
+      <li><a href="regExp.html">RegExp Object</a></li>
+    </ul>
+  </nav>
+  <article id="contentstart">
+    <h2 class="intro">Form Submitted!</h2>
+    <p>Congratulations on completing these tutorials, as a bonus check out the JavaScript code below. Which displays a user the results of their form submission.</p>
+    <br>
+    <pre class="brush: js">
+			var formData = location.search;
+                   formData = formData.substring(1, formData.length);
+                   while (formData.indexOf("+") !== -1) {
+                      formData = formData.replace("+", " ");
+                   }
+                   formData = decodeURIComponent(formData);
+                   var formArray = formData.split("&amp;");
+                   for (var i = 0; i &lt; formArray.length; i++) {
+                      document.write("&lt;p>" + formArray[i] + "&lt;/p>");
+                   }
+			</pre>
+    <h3>You entered the following data:</h3>
+    <script>
+      var formData = location.search;
+      formData = formData.substring(1, formData.length);
+      while (formData.indexOf("+") !== -1)
+      {
+        formData = formData.replace("+", " ");
+      }
+      formData = decodeURIComponent(formData);
+      var formArray = formData.split("&");
+      for (var i = 0; i < formArray.length; i++)
+      {
+        document.write("<p>" + formArray[i] + "</p>");
+      }
+    </script>
+  </article>
+  <footer id="content-end">
+    <p>JavaScript Tutorials</p>
+  </footer>
+  <script src="Scripts/CooperBlack.js"></script>
+  <script src="SyntaxHighlighter/shCore.js"></script>
+  <script src="SyntaxHighlighter/shBrushJScript.js"></script>
+  <script type="text/javascript">
+    SyntaxHighlighter.all()
+  </script>
+</body>
+
+</html>

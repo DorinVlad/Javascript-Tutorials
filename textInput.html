@@ -1,0 +1,169 @@
+﻿
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>JavaScript Tutorials</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <script src="Scripts/modernizr.custom.40753.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Bitter" rel="stylesheet" />
+  <link rel="stylesheet" href="ProjectStyles.css">
+  <link rel="stylesheet" href="SyntaxHighlighter/shCore.css">
+  <link rel="stylesheet" href="SyntaxHighlighter/shThemeDefault.css">
+  <link rel="shortcut icon" href="images/favicon.ico">
+</head>
+
+<body>
+  <header id="top">
+  </header>
+  <nav class="sitenavigation">
+    <ul>
+      <figure>
+        <a href="#"><img src="images/JavaScriptNewLogo.png" id="icon-home" width="350" height="100" alt="JavaScript Tutorials"></a>
+      </figure>
+      <li><a href="index.html">Validation</a></li>
+      <li><a href="textInput.html">Text Input</a></li>
+      <li><a href="otherInput.html">Other Input</a></li>
+      <li><a href="regExp.html">RegExp Object</a></li>
+    </ul>
+  </nav>
+  <article id="contentstart">
+    <h2>Validating Text Input</h2>
+    <p>To perform basic validation on one or more input boxes of the text variety within a form, we must first start by adding all our necessary event listeners, and global variables.</p>
+    <br>
+    <p class="highlight">Note that I intentionally chose not to call our <span class="bold">createEventListeners() function</span> directly, as we will be adding additional code to our <span class="bold">setUpPage() function</span> in the next tutorial.</p>
+    <pre class="brush: js; collapse: true;">
+"use strict"; // interpret document contents in JavaScript strict mode
+
+/* global variables */
+var formValidity = true;
+
+/* create event listeners */
+function createEventListeners() {
+var form = document.getElementsByTagName("form")[0];
+	if (form.addEventListener) {
+	form.addEventListener("submit", validateForm, false);
+	} else if (form.attachEvent) {
+	form.attachEvent("onsubmit", validateForm);
+	}
+}
+
+function setUpPage() {
+createEventListeners();
+
+}
+
+/* run setup function when page finishes loading */
+if (window.addEventListener) {
+window.addEventListener("load", setUpPage, false);
+} else if (window.attachEvent) {
+window.attachEvent("onload", setUpPage);
+}
+</pre>
+    <br>
+    <p>Above our <span class="bold">createEventListeners() function</span> we can add our main validation function which uses a parameter name and begins with an if/else statement that prevents the event that called it from executing, in this case our on submit event. Below that we reset our formValidity variable to true and call all the functions we wish to perform validation on. Finally, we use
+      another if/else statement to check if our formValidity variable remains true after iterating thru any function calls, and if so hides our top-level error message, and allows the submit event to continue executing. If our variable has acquired a falsy value, we show our top-level error message, and scroll the user to the top of the page.</p>
+    <br>
+    <p class="highlight">Note for convivence sake our working example below will not include this scroll feature.</p>
+    <pre class="brush: js; collapse: true">
+/* validate form */
+function validateForm(evt) {
+	if (evt.preventDefault) {
+	evt.preventDefault(); // prevent form from submitting
+	}
+	else {
+	evt.returnValue = false; // prevent form from submitting in IE8 8
+	}
+	formValidity = true; // reset value for revalidation
+	// add calls below to validation functions
+	if (formValidity === true) {
+	document.getElementById("errorText").innerHTML = "";
+	document.getElementById("errorText").style.display = "none";
+	document.getElementsByTagName("form")[0].submit();
+	}
+else {
+document.getElementById("errorText").innerHTML = "Please fix the indicated problems and then resubmit your form.";
+document.getElementById("errorText").style.display = "block";
+scroll(0,0);
+	}
+}
+</pre>
+    <br>
+    <p>Above our <span class="bold">validateForm(evt) function</span>, we can finally add a function to validate all text input boxes. The first few lines of this function simple gathers all the necessary elements and appends them to variables. We then reset any error styles from a previous submission fail and incorporate the bulk of our validation in a <span class="bold">try statement</span>.
+      Which allows you to define a block of code to be tested for errors while it is being executed.</p>
+    <br>
+    <p>We’ve included several if and else/if statements that check the value of our input variables for a falsey value, and if so uses the not operator to turn its value truthy, thus executing the code it contains. Our <span class='bold'>throw statement</span> lets us create custom errors messages. The <span class='bold'>catch statement</span> then allows us to handle any error that has occurred,
+      and use a parameter name to apply to our throw statement. Which we can then add as the .innerHTML of an element to display to the user. More importantly because an error did occur, we change our formValidity variable within the catch statement to contain a falsy value.</p>
+    <br>
+    <pre class="brush: js; collapse: true">
+/* validate Personal Info */
+function validatePersonalInfo() {
+var errorDiv = document.querySelectorAll("div.errorMessage");
+var nameField = document.getElementById("field1");
+var emailField = document.getElementById("field2");
+try {
+// reset styles to valid state
+nameField.style.background = "";
+emailField.style.background = "";
+errorDiv[0].style.display = "none";
+	if (!(nameField.value || emailField.value)) {
+	nameField.style.background = "rgb(255,233,233)";
+	emailField.style.background = "rgb(255,233,233)";
+	throw "Please fill out all Personal Info fields";
+	}
+	else if (!(emailField.value)) {
+	emailField.style.background = "rgb(255,233,233)";
+	throw "Please Enter Your Email address";
+	}
+	else if (!(nameField.value)) {
+	nameField.style.background = "rgb(255,233,233)";
+	throw "Please Enter Your Name";}
+	}
+catch(msg) {
+	errorDiv[0].style.display = "block";
+	errorDiv[0].innerHTML = msg;
+	formValidity = false;}
+}
+</pre>
+    <br>
+    <p>Last but not least we’ll call this function in our <span class="bold">validateForm(evt) function</span> below the “add calls below to validation functions” JavaScript comment.</p>
+    <br>
+    <pre class="brush: js; highlight: 2">
+// add calls below to validation functions
+validatePersonalInfo();
+</pre>
+    <br>
+    <p>To see our JavaScript Program in action, test the simple form inputs below.</p>
+    <br>
+    <p class="highlight">Note that upon form validation you will automatically be redirected to the next tutorial.</p>
+    <br>
+    <div class="form-style-3">
+      <h2>Contact Us</h2>
+      <p id="errorText"></p>
+      <form action="otherInput.html">
+        <fieldset class="info">
+          <legend>Personal Info</legend>
+          <label for="field1"><span>Name <span class="required">*</span></span><input id="field1" type="text" class="input-field" name="name" placeholder="First Name Last name" /></label>
+          <label for="field2"><span>Email <span class="required">*</span></span><input id="field2" type="email" class="input-field" name="email" placeholder="address@example.com" /></label>
+          <div class="errorMessage"></div>
+        </fieldset>
+        <label class="submitbutton">&nbsp;<input type="submit" id="submitForm" value="Submit" /></label>
+      </form>
+    </div>
+  </article>
+  <footer id="content-end">
+    <p>JavaScript Tutorials</p>
+  </footer>
+  <script src="Scripts/CooperBlack.js"></script>
+  <script src="SyntaxHighlighter/shCore.js"></script>
+  <script src="SyntaxHighlighter/shBrushJScript.js"></script>
+  <script type="text/javascript">
+    SyntaxHighlighter.all()
+  </script>
+  <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="Scripts/NavBar.js"></script>
+  <script src="Scripts/Validation1.js"></script>
+</body>
+
+</html>

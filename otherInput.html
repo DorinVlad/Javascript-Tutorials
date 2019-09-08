@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>JavaScript Tutorials</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <script src="Scripts/modernizr.custom.40753.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=Bitter" rel="stylesheet" />
+  <link rel="stylesheet" href="ProjectStyles.css">
+  <link rel="stylesheet" href="SyntaxHighlighter/shCore.css">
+  <link rel="stylesheet" href="SyntaxHighlighter/shThemeDefault.css">
+  <link rel="shortcut icon" href="images/favicon.ico">
+</head>
+
+<body>
+  <header id="top">
+  </header>
+  <nav class="sitenavigation">
+    <ul>
+      <figure>
+        <a href="#"><img src="images/JavaScriptNewLogo.png" id="icon-home" width="350" height="100" alt="JavaScript Tutorials"></a>
+      </figure>
+      <li><a href="index.html">Validation</a></li>
+      <li><a href="textInput.html">Text Input</a></li>
+      <li><a href="otherInput.html">Other Input</a></li>
+      <li><a href="regExp.html">RegExp Object</a></li>
+    </ul>
+  </nav>
+  <article id="contentstart">
+
+    <h2 class="intro">Validating Other Input</h2>
+    <p>Validating radio, selection, and checkbox input requires slightly different JavaScript code from what we've done so far.</p>
+    <br>
+    <p>Above our <span class="bold">validateForm(evt) function</span> will add code that insures a radio button is selected. We use a for loop to reset the error styles of all buttons, we then verify each button’s checked statues by accessing it content as part of an array using the .getElementsByName method. if not checked each button returns falsy which then becomes truthy with our not operator.
+      Keep in mind that our “and” logical operator returns truthy, only if the right and left operand are also truthy. Thus, preventing this code to execute if an option is already selected. The reset of our code follows the same logic as our text input function.</p>
+    <br>
+    <p class="highlight">Note that our throw statement is placed outside the for loop yet still in our if statement, as iterating the throw statement offers no purpose.</p>
+    <br>
+    <pre class="brush: js; collapse: true">
+function validateCPU() {
+var fieldsetValidity = true;
+var errorDiv = document.querySelectorAll("div.componentsErrorMessage");
+var cpu = document.getElementsByName("CPU");
+try {
+// reset styles to valid state
+for (i = 0; i &lt; cpu.length; i++) { cpu[i].style.outline = ""; }
+errorDiv[0].style.display = "none";
+if (!cpu[0].checked &amp;&amp; !cpu[1].checked) {
+// verify that a cpu is selected
+	for ( var i = 0; i &lt; cpu.length; i++) {
+	cpu[i].style.outline = "1px solid red";}
+	throw "Please Select A CPU";
+	}
+}
+catch(msg) {
+errorDiv[0].style.display = "block";
+errorDiv[0].innerHTML = msg;
+formValidity = false; }
+}
+</pre>
+    <br>
+    <p>We can then add this function to the call stack in our <span class="bold">validateForm(evt) function</span> right below our last function call.</p>
+    <br>
+    <pre class="brush: js; highlight: 3">
+// add calls below to validation functions
+validatePersonalInfo();
+validateCPU();
+</pre>
+    <br>
+    <p>To validate a selection box, we must first create a function that changes its selected index to -1. This insures no value is preselected, and that any selection is directly chosen by the user. Insert the following code above our <span class="bold">validatePersonalInfo() function</span>.</p>
+    <br>
+    <pre class="brush: js">
+/* remove default values and formatting from Brand of Choice selection lists */
+function removeSelectDefaults() {
+var emptyBoxes = document.getElementById("field7");
+emptyBoxes.selectedIndex = -1;
+}
+</pre>
+    <br>
+    <p>We now need to insure this code executes every time our page is loaded. To achieve this, simple make a call to it from our <span class="bold">setUpPage() function</span>.</p>
+    <br>
+    <pre class="brush: js; highlight: 3">
+function setUpPage() {
+createEventListeners();
+removeSelectDefaults();
+}
+</pre>
+    <br>
+    <p>We can finally begin implementing our selection box input validation, adding it above our <span class="bold">validateForm(evt) function</span>. This if statement includes a strict equal operator that executes if the selected index remains equal to -1 on form submission.</p>
+    <br>
+    <pre class="brush: js; collapse: true">
+function validateBrand() {
+var fieldsetValidity = true;
+var errorDiv = document.querySelectorAll("div.componentsErrorMessage");
+var brandOfChoice = document.getElementById("field7")
+try {
+// reset styles to valid state
+brandOfChoice.style.border = "";
+errorDiv[2].style.display = "none";
+errorDiv[2].innerHTML = "";
+	if (brandOfChoice.selectedIndex === -1) {
+	throw "Please Specify Your Brand Of Choice";
+	}
+}
+catch(msg) {
+	errorDiv[2].style.display = "block";
+	errorDiv[2].innerHTML = msg;
+	formValidity = false;}
+}
+</pre>
+    <br>
+    <p>Dont forget to add this function to the call stack in our validateForm(evt) function right below our last function call.</p>
+    <br>
+    <pre class="brush: js; highlight: 4">
+// add calls below to validation functions
+validatePersonalInfo();
+validateCPU();
+validateBrand();
+</pre>
+    <br>
+    <p>I contemplated Whether I should include code for validating checkboxes, as the process is completely identical to that of performing validation on radio buttons. The code below uses the exact process of our <span class="bold">validateCPU() function</span> from earlier.</p>
+    <br>
+    <pre class="brush: js; collapse: true">
+function validateStorage() {
+var fieldsetValidity = true;
+var errorDiv = document.querySelectorAll("div.errorMessage");
+var storage = document.getElementsByName("Preferred-Storage");
+try {
+// reset styles to valid state
+for (i = 0; i &lt; storage.length; i++) { storage[i].style.outline = ""; }
+errorDiv[1].style.display = "none";
+errorDiv[1].innerHTML = "";
+if (!storage[0].checked &amp;&amp; !storage[1].checked &amp;&amp; !storage[2].checked &amp;&amp; !storage[3].checked)  {
+	for ( var i = 0; i &lt; storage.length; i++) {
+	storage[i].style.outline = "1px solid red";}
+throw "Please Specify One or More Storage Devices";
+	}
+  }
+catch(msg) {
+	errorDiv[1].style.display = "block";
+	errorDiv[1].innerHTML = msg;
+	formValidity = false;}
+}
+</pre>
+    <br>
+    <p>After adding this function to the call stack in our validateForm(evt) function right below our last function call, we can finally call it a day.</p>
+    <pre class="brush: js; highlight: 5">
+// add calls below to validation functions
+validatePersonalInfo();
+validateCPU();
+validateBrand();
+validateStorage();
+</pre>
+    <br>
+    <p>Since our form length has substantially increased, the working example we've provided will now incorporate a scroll feature to display the top-level error message in our <span class="bold">validateForm(evt) function</span>.</p>
+    <br>
+    <pre class="brush: js; highlight: [4]">
+else {
+document.getElementById("errorText").innerHTML = "Please fix the indicated problems and then resubmit your form.";
+document.getElementById("errorText").style.display = "block";
+document.getElementById("formTop").scrollIntoView({behavior: "smooth"});
+	}
+}
+</pre>
+    <br>
+    <p>To see our new JavaScript Program in action, test the latest additions to the from below.</p>
+    <br id="formTop">
+    <p class="highlight">Note that upon form validation you will automatically be redirected to the final tutorial.</p>
+    <br>
+    <div class="form-style-3">
+      <h2>Contact Us</h2>
+      <p id="errorText"></p>
+      <form action="index.html">
+        <fieldset class="info">
+          <legend>Personal Info</legend>
+          <label for="field1"><span>Name <span class="required">*</span></span><input id="field1" type="text" class="input-field" name="name" placeholder="First Name Last name" /></label>
+          <label for="field2"><span>Email <span class="required">*</span></span><input id="field2" type="email" class="input-field" name="email" placeholder="address@example.com" /></label>
+          <div class="errorMessage"></div>
+        </fieldset>
+        <fieldset>
+          <fieldset class="components">
+            <legend class="fav">Favorite Components</legend>
+            <legend>CPU</legend>
+            <label for="field3"><input type="radio" name="CPU" id="field3" value="Intel">
+              <span>Intel</span>
+            </label>
+            <label for="field4">
+              <input type="radio" name="CPU" id="field4" value="AMD">
+              <span>AMD</span>
+            </label>
+            <div class="componentsErrorMessage"></div>
+            <legend>Graphics Card</legend>
+            <label for="field5">
+              <input type="radio" name="GPU" id="field5" value="Nvidia">
+              <span>Nvidia</span>
+            </label>
+            <label for="field6">
+              <input type="radio" name="GPU" id="field6" value="AMD">
+              <span>AMD</span>
+            </label>
+            <div class="componentsErrorMessage"></div>
+            <legend>Preferred Manufacturer</legend>
+            <label for="field7"><span>Brand of Choice</span></label>
+            <select id="field7" name="Favorite-Manufacturer">
+              <option value="Samsung">Samsung</option>
+              <option value="Gigabyte">Gigabyte</option>
+              <option value="Corsair">Corsair</option>
+              <option value="G. SKILL">G. SKILL</option>
+              <option value="EVGA">EVGA</option>
+              <option value="ASUS">ASUS</option>
+              <option value="MSI">MSI</option>
+              <option value="NZXT">NZXT</option>
+            </select>
+            <div class="componentsErrorMessage"></div>
+            <legend>Preferred Storage</legend>
+            <label for="hdd">
+              <input type="checkbox" id="hdd" Value="HDD" name="Preferred-Storage">
+              <span>HDD</span>
+            </label>
+            <label for="ssd">
+              <input type="checkbox" id="ssd" Value="SSD" name="Preferred-Storage">
+              <span>SSD</span>
+            </label>
+            <label for="m2">
+              <input type="checkbox" id="m2" Value="M.2" name="Preferred-Storage">
+              <span>M.2</span>
+            </label>
+            <label for="nvme">
+              <input type="checkbox" id="nvme" Value="NVMe" name="Preferred-Storage">
+              <span>NVMe</span>
+            </label>
+            <div class="errorMessage"></div>
+          </fieldset>
+          <label class="submitbutton">&nbsp;<input type="submit" id="submitForm" value="Submit" /></label>
+      </form>
+    </div>
+  </article>
+  <footer id="content-end">
+    <p>JavaScript Tutorials</p>
+  </footer>
+  <script src="Scripts/CooperBlack.js"></script>
+  <script src="SyntaxHighlighter/shCore.js"></script>
+  <script src="SyntaxHighlighter/shBrushJScript.js"></script>
+  <script type="text/javascript">
+    SyntaxHighlighter.all()
+  </script>
+  <script src="//code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="Scripts/NavBar.js"></script>
+  <script src="Scripts/Validation2.js"></script>
+</body>
+
+</html>
